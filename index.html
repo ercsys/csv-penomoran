@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&display=swap"
+      rel="stylesheet"
+    />
+    <title>CSV Penomoran</title>
+  </head>
+
+  <style>
+    body {
+      font-family: "Cascadia Code", sans-serif;
+      font-weight: 300;
+      letter-spacing: -0.5px;
+      font-size: 0.9rem;
+    }
+
+    input {
+      font-family: "Cascadia Code", sans-serif;
+      font-weight: 300;
+      width: 200px;
+      padding: 5px 7px;
+      margin: 5px 0px;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .form-in {
+      display: grid;
+      align-items: center;
+      grid-template-columns: 2fr 2fr;
+    }
+
+    button {
+      font-family: "Cascadia Code", sans-serif;
+      font-weight: 700;
+      padding: 7px 10px;
+      margin-top: 3px;
+      right: 0;
+      background-color: brown;
+      border-radius: 5px;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .penjelasan {
+      border: 1px solid brown !important;
+      background-color: transparent;
+      color: brown !important;
+    }
+
+    .penjelasan:hover {
+      background-color: burlywood !important;
+      color: white !important;
+      border: 1px solid burlywood !important;
+    }
+
+    .footer-content {
+      display: flex;
+      gap: 5px;
+      justify-content: right;
+    }
+
+    button:hover {
+      background-color: burlywood;
+      transition: 0.1s ease-in;
+    }
+
+    .explain {
+      padding: 5px 10px;
+      margin: 20px 0px;
+      text-align: justify;
+      line-height: 25px;
+      border-radius: 10px;
+      border: 1px dashed brown;
+      width: 500px;
+      display: none;
+    }
+
+    ul {
+      padding: 20px;
+    }
+
+    b {
+      font-weight: 900;
+      color: brown;
+    }
+
+    h3 {
+      text-align: center;
+    }
+  </style>
+
+  <body>
+    <div class="container">
+      <h2>Export CSV Penomoran</h2>
+      <div class="main">
+        <div class="form-in">
+          <span>Prefix (Opsional):</span>
+          <input type="text" id="prefix" placeholder="contoh: INV-" />
+        </div>
+        <div class="form-in">
+          <span>Nomor Mulai:</span>
+          <input type="number" id="start" value="1" />
+        </div>
+        <div class="form-in">
+          <span>Jumlah Nomor:</span>
+          <input type="number" id="count" value="100" />
+        </div>
+        <div class="form-in">
+          <span>Jumlah Digit:</span>
+          <input type="number" id="digits" value="1" />
+        </div>
+        <div class="form-in">
+          <span>Jumlah Kolom (Advance):</span>
+          <input type="number" id="columns" value="1" />
+        </div>
+        <div class="footer-content">
+          <button class="penjelasan" onclick="help()">Cara Kerja</button>
+          <button onclick="generateCSV()">Download CSV</button>
+        </div>
+      </div>
+
+      <div class="explain" id="explain">
+        <h3>Penjelasan Singkat</h3>
+        <ul>
+          <li>
+            Prefix digunakan sebagai imbuhan depan sebelum penomoran. Misalnya
+            <b>ON-</b>00001, <b>INV</b>0001, <b>2025</b>0001
+          </li>
+          <li>Nomor Mulai diisi nomor mulai dari berapa 1, 101, 201 dst.</li>
+          <li>
+            Jumlah Nomor diisi jumlah nomor yang diinginkan 100pcs 200pcs dst.
+          </li>
+          <li>
+            Jumlah Digit diisi total digit nomor ingin 3 digit, 4 digit dst.
+          </li>
+          <li>
+            Jumlah Kolom diisi jumlah kolom, biasanya digunakan jika ingin
+            langsung menyusun kedalam format cetak. Misalnya nota, voucher dsb.
+          </li>
+          <li>
+            File CSV yang sudah terdownload bisa langsung digunakan. Jangan open
+            file CSV apalagi sampai di save kembali, karena akan menghilangkan
+            format yang sudah ada.
+          </li>
+          <li><b>Pastikan tetap memeriksa hasil kerja anda.</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      function padNumber(num, length) {
+        return num.toString().padStart(length, "0");
+      }
+
+      function generateCSV() {
+        const start = parseInt(document.getElementById("start").value, 10);
+        const count = parseInt(document.getElementById("count").value, 10);
+        const digits = parseInt(document.getElementById("digits").value, 10);
+        const columns = parseInt(document.getElementById("columns").value, 10);
+        const prefix = document.getElementById("prefix").value || "";
+
+        if (
+          isNaN(start) ||
+          isNaN(count) ||
+          isNaN(digits) ||
+          isNaN(columns) ||
+          digits <= 0 ||
+          columns <= 0 ||
+          count <= 0
+        ) {
+          alert("Input tidak valid.");
+          return;
+        }
+
+        // Buat array penomoran
+        const numbers = [];
+        for (let i = 0; i < count; i++) {
+          const current = start + i;
+          const formatted = padNumber(current, digits);
+          numbers.push(prefix + formatted);
+        }
+
+        // Hitung jumlah baris
+        const rows = Math.ceil(numbers.length / columns);
+
+        // Header
+        let csvContent =
+          Array.from({ length: columns }, (_, i) => `No${i + 1}`).join(",") +
+          "\n";
+
+        // Baris-baris
+        for (let r = 0; r < rows; r++) {
+          const row = [];
+          for (let c = 0; c < columns; c++) {
+            const index = r + c * rows;
+            row.push(numbers[index] || "");
+          }
+          csvContent += row.join(",") + "\n";
+        }
+
+        // nomor akhir
+        const lastNum = start + count - 1;
+        const mulai = padNumber(start, digits);
+        const akhir = padNumber(lastNum, digits);
+        const awalan = prefix != "" ? prefix : "";
+
+        // Buat & unduh file CSV
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute(
+          "download",
+          `penomoran-${digits} digit_${awalan}${mulai}-${awalan}${akhir}.csv`
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function help() {
+        const help = document.getElementById("explain");
+        const x =
+          help.style.display == "none" || help.style.display == ""
+            ? "block"
+            : "none";
+        help.style.display = x;
+      }
+    </script>
+  </body>
+</html>
