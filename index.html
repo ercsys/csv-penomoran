@@ -109,6 +109,10 @@
           <input type="text" id="prefix" placeholder="contoh: INV-" />
         </div>
         <div class="form-in">
+          <span>Suffix (Opsional):</span>
+          <input type="text" id="suffix" placeholder="contoh: xx-suffix" />
+        </div>
+        <div class="form-in">
           <span>Nomor Mulai:</span>
           <input type="number" id="start" value="1" />
         </div>
@@ -169,6 +173,7 @@
         const digits = parseInt(document.getElementById("digits").value, 10);
         const columns = parseInt(document.getElementById("columns").value, 10);
         const prefix = document.getElementById("prefix").value || "";
+        const suffix = document.getElementById("suffix").value || "";
 
         if (
           isNaN(start) ||
@@ -188,7 +193,7 @@
         for (let i = 0; i < count; i++) {
           const current = start + i;
           const formatted = padNumber(current, digits);
-          numbers.push(prefix + formatted);
+          numbers.push(prefix + formatted + suffix);
         }
 
         // Hitung jumlah baris
@@ -214,6 +219,7 @@
         const mulai = padNumber(start, digits);
         const akhir = padNumber(lastNum, digits);
         const awalan = prefix != "" ? prefix : "";
+        const nameSuffix = suffix != "" ? suffix : "";
 
         // Buat & unduh file CSV
         const blob = new Blob([csvContent], {
@@ -224,7 +230,7 @@
         link.setAttribute("href", url);
         link.setAttribute(
           "download",
-          `penomoran-${digits} digit_${awalan}${mulai}-${awalan}${akhir}.csv`
+          `penomoran-${digits} digit_${awalan}${mulai}${nameSuffix}-${awalan}${akhir}${nameSuffix}.csv`
         );
         document.body.appendChild(link);
         link.click();
