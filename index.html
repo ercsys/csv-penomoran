@@ -4,75 +4,111 @@
     <meta charset="UTF-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&display=swap" rel="stylesheet" />
     <title>CSV Penomoran</title>
   </head>
 
   <style>
     body {
+      background-color: #282828;
       font-family: "Cascadia Code", sans-serif;
-      font-weight: 300;
+      font-weight: 400;
       letter-spacing: -0.5px;
       font-size: 0.9rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    label,
+    span,
+    h3 {
+      color: rgb(173, 173, 173);
     }
 
     input {
       font-family: "Cascadia Code", sans-serif;
       font-weight: 300;
-      width: 200px;
+      box-sizing: border-box;
+      width: 100%;
       padding: 5px 7px;
-      margin: 5px 0px;
+      margin: 2px 0px;
+      border: 1px solid #ccc;
+      background-color: transparent;
+      color: white;
+      border-radius: 4px;
+      transition: border-color 0.2s ease-in-out;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgb(237, 123, 0);
     }
 
     .container {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
+      padding: 20px 40px;
+      border-radius: 8px;
+      width: 500px;
     }
 
     .form-in {
       display: grid;
       align-items: center;
-      grid-template-columns: 2fr 2fr;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+
+    .form-in > div {
+      display: flex;
+      align-items: center;
+      gap: 20px; /* Jarak antar grup radio */
+    }
+
+    .form-in > div > span {
+      display: flex;
+      align-items: center;
+      gap: 5px; /* Jarak antara radio dan label */
     }
 
     button {
       font-family: "Cascadia Code", sans-serif;
       font-weight: 700;
       padding: 7px 10px;
-      margin-top: 3px;
-      right: 0;
-      background-color: brown;
+      background-color: rgb(237, 123, 0);
       border-radius: 5px;
       border: none;
-      color: white;
+      color: #282828;
+      border: 1px solid rgb(237, 123, 0) !important;
       cursor: pointer;
     }
 
     .penjelasan {
-      border: 1px solid brown !important;
+      border: 1px solid rgb(237, 123, 0) !important;
       background-color: transparent;
-      color: brown !important;
+      color: rgb(237, 123, 0) !important;
     }
 
     .penjelasan:hover {
-      background-color: burlywood !important;
-      color: white !important;
-      border: 1px solid burlywood !important;
+      background-color: rgb(237, 123, 0) !important;
+      color: #282828 !important;
+      border: 1px solid rgb(237, 123, 0) !important;
     }
 
     .footer-content {
       display: flex;
       gap: 5px;
+      margin-top: 20px;
       justify-content: right;
     }
 
     button:hover {
-      background-color: burlywood;
-      transition: 0.1s ease-in;
+      background-color: rgba(0, 0, 0, 0);
+      border: 1px solid rgb(237, 123, 0) !important;
+      color: rgb(237, 123, 0) !important;
+      transition: 0.2s ease-in;
     }
 
     .explain {
@@ -82,7 +118,7 @@
       line-height: 25px;
       border-radius: 10px;
       border: 1px dashed brown;
-      width: 500px;
+      max-width: 500px;
       display: none;
     }
 
@@ -92,24 +128,51 @@
 
     b {
       font-weight: 900;
-      color: brown;
+      color: rgb(237, 123, 0);
     }
 
     h3 {
       text-align: center;
     }
+
+    .gif-container {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: -1; /* Menempatkan di belakang konten lain */
+    }
+
+    .gif-container2 {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      z-index: -1; /* Menempatkan di belakang konten lain */
+    }
+
+    .gif-container2 img {
+      transform: scale(-1, 1);
+      opacity: 0.7; /* Membuat gambar sedikit transparan */
+      max-width: 200px;
+      border-radius: 10px;
+    }
+
+    .gif-container img {
+      max-width: 200px;
+      border-radius: 10px;
+      opacity: 0.7; /* Membuat gambar sedikit transparan */
+    }
   </style>
 
   <body>
     <div class="container">
-      <h2>Export CSV Penomoran</h2>
+      <h3>Export CSV Penomoran</h3>
       <div class="main">
         <div class="form-in">
-          <span>Prefix (Opsional):</span>
+          <span>Awalan (Opsional):</span>
           <input type="text" id="prefix" placeholder="contoh: INV-" />
         </div>
         <div class="form-in">
-          <span>Suffix (Opsional):</span>
+          <span>Akhiran (Opsional):</span>
           <input type="text" id="suffix" placeholder="contoh: xx-suffix" />
         </div>
         <div class="form-in">
@@ -125,8 +188,21 @@
           <input type="number" id="digits" value="1" />
         </div>
         <div class="form-in">
-          <span>Jumlah Kolom (Advance):</span>
+          <span>Jumlah Kolom:</span>
           <input type="number" id="columns" value="1" />
+        </div>
+        <div class="form-in">
+          <span>Urutkan Berdasarkan:</span>
+          <div>
+            <span>
+              <input type="radio" id="sortByColumn" name="sortBy" value="column" checked />
+              <label for="sortByColumn">Kolom</label>
+            </span>
+            <span>
+              <input type="radio" id="sortByRow" name="sortBy" value="row" />
+              <label for="sortByRow">Baris</label>
+            </span>
+          </div>
         </div>
         <div class="footer-content">
           <button class="penjelasan" onclick="help()">Cara Kerja</button>
@@ -134,32 +210,36 @@
         </div>
       </div>
 
-      <div class="explain" id="explain">
+      <div class="explain" id="explain" style="width: auto">
         <h3>Penjelasan Singkat</h3>
         <ul>
           <li>
-            Prefix digunakan sebagai imbuhan depan sebelum penomoran. Misalnya
+            Awalan digunakan bagian depan sebelum penomoran. Misalnya
             <b>ON-</b>00001, <b>INV</b>0001, <b>2025</b>0001
           </li>
+          <li>Akhiran digunakan pada bagian belakang setelah penomoran. Misalnya 00001<b>.jpg</b>, 0001<b>2025</b></li>
           <li>Nomor Mulai diisi nomor mulai dari berapa 1, 101, 201 dst.</li>
+          <li>Jumlah Nomor diisi jumlah nomor yang diinginkan 100pcs 200pcs dst.</li>
+          <li>Jumlah Digit diisi total digit nomor ingin 3 digit, 4 digit dst.</li>
+          <li>Jumlah Kolom diisi jumlah kolom, biasanya digunakan jika ingin langsung menyusun kedalam format cetak. Misalnya nota, voucher dsb.</li>
           <li>
-            Jumlah Nomor diisi jumlah nomor yang diinginkan 100pcs 200pcs dst.
+            <b>Urutkan berdasarkan Kolom/Baris:</b> Menentukan bagaimana penomoran diisi ke dalam kolom-kolom.
+            <ul>
+              <li><b>Kolom:</b> Nomor akan diisi secara vertikal terlebih dahulu (kolom per kolom).</li>
+              <li><b>Baris:</b> Nomor akan diisi secara horizontal terlebih dahulu (baris per baris).</li>
+            </ul>
           </li>
-          <li>
-            Jumlah Digit diisi total digit nomor ingin 3 digit, 4 digit dst.
-          </li>
-          <li>
-            Jumlah Kolom diisi jumlah kolom, biasanya digunakan jika ingin
-            langsung menyusun kedalam format cetak. Misalnya nota, voucher dsb.
-          </li>
-          <li>
-            File CSV yang sudah terdownload bisa langsung digunakan. Jangan open
-            file CSV apalagi sampai di save kembali, karena akan menghilangkan
-            format yang sudah ada.
-          </li>
+          <li>File CSV yang sudah terdownload bisa langsung digunakan. Jangan open file CSV apalagi sampai di save kembali, karena akan menghilangkan format yang sudah ada.</li>
           <li><b>Pastikan tetap memeriksa hasil kerja anda.</b></li>
         </ul>
       </div>
+    </div>
+
+    <div class="gif-container">
+      <img src="ani.gif" alt="Slime" />
+    </div>
+    <div class="gif-container2">
+      <img src="ani.gif" alt="Slime" />
     </div>
 
     <script>
@@ -174,16 +254,10 @@
         const columns = parseInt(document.getElementById("columns").value, 10);
         const prefix = document.getElementById("prefix").value || "";
         const suffix = document.getElementById("suffix").value || "";
+        const sortByColumn = document.getElementById("sortByColumn").checked;
+        const sortOrder = sortByColumn ? "column" : "row";
 
-        if (
-          isNaN(start) ||
-          isNaN(count) ||
-          isNaN(digits) ||
-          isNaN(columns) ||
-          digits <= 0 ||
-          columns <= 0 ||
-          count <= 0
-        ) {
+        if (isNaN(start) || isNaN(count) || isNaN(digits) || isNaN(columns) || digits <= 0 || columns <= 0 || count <= 0) {
           alert("Input tidak valid.");
           return;
         }
@@ -200,15 +274,19 @@
         const rows = Math.ceil(numbers.length / columns);
 
         // Header
-        let csvContent =
-          Array.from({ length: columns }, (_, i) => `No${i + 1}`).join(",") +
-          "\n";
+        let csvContent = Array.from({ length: columns }, (_, i) => `No${i + 1}`).join(",") + "\n";
 
         // Baris-baris
         for (let r = 0; r < rows; r++) {
           const row = [];
           for (let c = 0; c < columns; c++) {
-            const index = r + c * rows;
+            let index;
+            if (sortOrder === "column") {
+              index = r + c * rows;
+            } else {
+              // sortOrder === "row"
+              index = r * columns + c;
+            }
             row.push(numbers[index] || "");
           }
           csvContent += row.join(",") + "\n";
@@ -218,8 +296,8 @@
         const lastNum = start + count - 1;
         const mulai = padNumber(start, digits);
         const akhir = padNumber(lastNum, digits);
-        const awalan = prefix != "" ? prefix : "";
-        const nameSuffix = suffix != "" ? suffix : "";
+        const awalan = prefix;
+        const nameSuffix = suffix;
 
         // Buat & unduh file CSV
         const blob = new Blob([csvContent], {
@@ -228,10 +306,7 @@
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
-        link.setAttribute(
-          "download",
-          `penomoran-${digits} digit_${awalan}${mulai}${nameSuffix}-${awalan}${akhir}${nameSuffix}.csv`
-        );
+        link.setAttribute("download", `penomoran-${digits} digit_${awalan}${mulai}${nameSuffix}-${awalan}${akhir}${nameSuffix}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -239,10 +314,7 @@
 
       function help() {
         const help = document.getElementById("explain");
-        const x =
-          help.style.display == "none" || help.style.display == ""
-            ? "block"
-            : "none";
+        const x = help.style.display == "none" || help.style.display == "" ? "block" : "none";
         help.style.display = x;
       }
     </script>
